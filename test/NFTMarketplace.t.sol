@@ -14,6 +14,7 @@ contract MarketplaceTestContract is Test {
         nft = new MyToken();
     }
 
+    // minting nfts for a marketplace
     function testMintNft() public {
         nft.safeMint(address(1),1,"audi");
         assertEq(nft.balanceOf(address(1)),1);
@@ -22,6 +23,7 @@ contract MarketplaceTestContract is Test {
         console.log(address(marketplace));
     }
 
+    // liting the nft to the marketplace, which required approvals
     function testListingNft() public{
         nft.safeMint(address(1),1,"audi");
         vm.deal(address(1),2 ether);
@@ -35,6 +37,7 @@ contract MarketplaceTestContract is Test {
         
     }
 
+    // Any addresses can purchases nft from the marketplace
     function testPurchaseNft() public{
         nft.safeMint(address(1),1,"audi");
         vm.deal(address(1),2 ether);
@@ -52,6 +55,7 @@ contract MarketplaceTestContract is Test {
         assertEq(nft.balanceOf(address(2)),1);
     }
 
+    // Reselling the nft which bought from the marketplace
     function testResellNft() public{
         nft.safeMint(address(1),1,"audi");
         vm.deal(address(1),2 ether);
@@ -75,6 +79,7 @@ contract MarketplaceTestContract is Test {
         assertEq(marketplace.listCounts(),1);
     }
 
+    // minting and listing multiple nfts
     function testListMultipleNfts() public{
         nft.safeMint(address(1),1,"audi");
         vm.deal(address(1),2 ether);
@@ -99,6 +104,7 @@ contract MarketplaceTestContract is Test {
         
     }
 
+    // If nft is not active for selling , can't buy it
     function testFailPruchaseNotActiveNft() public{
         nft.safeMint(address(1),1,"audi");
         vm.deal(address(1),2 ether);
@@ -120,6 +126,7 @@ contract MarketplaceTestContract is Test {
         marketplace.purchaseNft{value : 1 ether}(1,address(nft));
     }
 
+    // Tries to list nft without approvals but fails
     function testFailListingNftWithoutApproval() public{
         nft.safeMint(address(1),1,"audi");
         vm.deal(address(1),2 ether);
@@ -128,6 +135,7 @@ contract MarketplaceTestContract is Test {
         assertEq(marketplace.listCounts(),1);
     }
 
+    // Only owner can list his nft
     function testFailNotOwnerTryingToListingNft() public{
         nft.safeMint(address(1),1,"audi");
         vm.deal(address(3),2 ether);
