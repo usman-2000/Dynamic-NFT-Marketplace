@@ -1,3 +1,7 @@
+## About this Contract
+
+This contract is for a marketplace where you can sell or purchase NFT collections. For listing your nft in this marketplace, you should be the owner of the NFT. The listing function takes tokenId, nft Contract Address and Price on which you want to sell.
+
 ## Foundry
 
 **Foundry is a blazing fast, portable and modular toolkit for Ethereum application development written in Rust.**
