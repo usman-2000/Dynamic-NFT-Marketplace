@@ -74,4 +74,69 @@ contract MarketplaceTestContract is Test {
         marketplace.listNft{value : 1 ether}(0x2e234DAe75C793f67A35089C9d99245E1C58470b,1,1);
         assertEq(marketplace.listCounts(),1);
     }
+
+    function testListMultipleNfts() public{
+        nft.safeMint(address(1),1,"audi");
+        vm.deal(address(1),2 ether);
+        vm.prank(address(1));
+        nft.setApprovalForAll(address(nft),true);
+        vm.prank(address(1));
+        nft.setApprovalForAll(address(marketplace),true);
+        vm.prank(address(1));
+        marketplace.listNft{value : 1 ether}(0x2e234DAe75C793f67A35089C9d99245E1C58470b,1,1);
+        assertEq(marketplace.listCounts(),1);
+
+
+        nft.safeMint(address(2),2,"audi1");
+        vm.deal(address(2),2 ether);
+        vm.prank(address(2));
+        nft.setApprovalForAll(address(nft),true);
+        vm.prank(address(2));
+        nft.setApprovalForAll(address(marketplace),true);
+        vm.prank(address(2));
+        marketplace.listNft{value : 1 ether}(0x2e234DAe75C793f67A35089C9d99245E1C58470b,2,1);
+        assertEq(marketplace.listCounts(),2);
+        
+    }
+
+    function testFailPruchaseNotActiveNft() public{
+        nft.safeMint(address(1),1,"audi");
+        vm.deal(address(1),2 ether);
+        vm.prank(address(1));
+        nft.setApprovalForAll(address(nft),true);
+        vm.prank(address(1));
+        nft.setApprovalForAll(address(marketplace),true);
+        vm.prank(address(1));
+        marketplace.listNft{value : 1 ether}(0x2e234DAe75C793f67A35089C9d99245E1C58470b,1,1);
+        assertEq(marketplace.listCounts(),1);
+
+        vm.deal(address(2),2 ether);
+        vm.prank(address(2));
+        marketplace.purchaseNft{value : 1 ether}(1,address(nft));
+        assertEq(nft.balanceOf(address(2)),1);
+
+        vm.deal(address(3),2 ether);
+        vm.prank(address(3));
+        marketplace.purchaseNft{value : 1 ether}(1,address(nft));
+    }
+
+    function testFailListingNftWithoutApproval() public{
+        nft.safeMint(address(1),1,"audi");
+        vm.deal(address(1),2 ether);
+        vm.prank(address(1));
+        marketplace.listNft{value : 1 ether}(0x2e234DAe75C793f67A35089C9d99245E1C58470b,1,1);
+        assertEq(marketplace.listCounts(),1);
+    }
+
+    function testFailNotOwnerTryingToListingNft() public{
+        nft.safeMint(address(1),1,"audi");
+        vm.deal(address(3),2 ether);
+        vm.prank(address(1));
+        nft.setApprovalForAll(address(nft),true);
+        vm.prank(address(1));
+        nft.setApprovalForAll(address(marketplace),true);
+        vm.prank(address(3));
+        marketplace.listNft{value : 1 ether}(0x2e234DAe75C793f67A35089C9d99245E1C58470b,1,1);
+        assertEq(marketplace.listCounts(),1);
+    }
 }
